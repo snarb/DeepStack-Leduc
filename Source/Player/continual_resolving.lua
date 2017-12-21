@@ -14,6 +14,7 @@ local ContinualResolving = torch.class('ContinualResolving')
 function ContinualResolving:__init()
   self.starting_player_range = card_tools:get_uniform_range(arguments.Tensor{})
   self:resolve_first_node()
+  self.cache = {}
 end
 
 --- Solves a depth-limited lookahead from the first node of the game to get 
@@ -75,8 +76,15 @@ function ContinualResolving:_resolve_node(node, state)
     self:_update_invariant(node, state)
     
     --2.2 re-solve
-    self.resolving = Resolving()    
-    self.resolving:resolve(node, self.current_player_range, self.current_opponent_cfvs_bound)
+    
+    culVal = self.cache[state.game_state_str]
+    if (culVal == nil) then
+      self.resolving = Resolving()    
+      self.resolving:resolve(node, self.current_player_range, self.current_opponent_cfvs_bound)
+      self.cache[state.game_state_str] = self.resolving 
+    else
+      self.resolving = culVal
+    end
   end
 end
 

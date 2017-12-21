@@ -139,6 +139,7 @@ function ACPCProtocolToNode:_parse_state(state)
   
   out.hand_p1 = hand_p1
   out.hand_p2 = hand_p2
+  out.game_state_str = actions .. cards;
   
   return out
 end
@@ -280,6 +281,8 @@ function ACPCProtocolToNode:_process_parsed_state(parsed_state)
     out.bet1 = bet2
     out.bet2 = bet1
   end
+  
+  out.game_state_str = parsed_state.game_state_str
 
   return out
 end
